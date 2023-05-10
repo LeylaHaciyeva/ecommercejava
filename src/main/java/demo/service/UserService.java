@@ -24,7 +24,7 @@ public class UserService {
     }
 
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(x -> userDtoConverter.convert(x)).collect(Collectors.toList());
+        return userDtoConverter.convert(userRepository.findAll());
     }
 
     public UserDto getUser(Long id) {
