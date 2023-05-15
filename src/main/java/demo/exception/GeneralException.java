@@ -15,4 +15,8 @@ public class GeneralException extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> userIsNotActiveException(UserIsNotActiveException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(UserDetailsNotException.class)
+    public ResponseEntity<?> userDetailsNotException(UserDetailsNotException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

@@ -1,0 +1,35 @@
+package demo.controller;
+
+import demo.dto.CreateUserDetailsRequest;
+import demo.dto.UpdateUserDetailsRequest;
+import demo.dto.UserDetailsDto;
+import demo.service.UserDetailsService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/userDetails")
+public class UserDetailsController {
+    private final UserDetailsService userDetailsService;
+
+    public UserDetailsController(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+
+    @PostMapping
+    public ResponseEntity<UserDetailsDto> createUserDetails(@RequestBody CreateUserDetailsRequest userDetailsRequest) {
+        return ResponseEntity.ok(userDetailsService.createUserDetails(userDetailsRequest));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDetailsDto> updateUserDetails(@PathVariable Long id, @RequestBody UpdateUserDetailsRequest userDetailsRequest) {
+        return ResponseEntity.ok(userDetailsService.updateUserDetails(id, userDetailsRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> updateUserDetails(@PathVariable Long id) {
+        userDetailsService.deleteUserDetails(id);
+        return ResponseEntity.ok().build();
+    }
+}

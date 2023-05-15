@@ -3,7 +3,6 @@ package demo.controller;
 import demo.dto.CreateUserRequest;
 import demo.dto.UpdateUserRequest;
 import demo.dto.UserDto;
-import demo.model.User;
 import demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

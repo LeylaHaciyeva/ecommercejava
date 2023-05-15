@@ -6,19 +6,18 @@ import demo.dto.UserDto;
 import demo.dto.UserDtoConverter;
 import demo.exception.UserIsNotActiveException;
 import demo.exception.UserNotFoundException;
-import demo.model.UserInformation;
-import demo.repository.UserInformationRepository;
+import demo.model.Users;
+import demo.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final UserInformationRepository userRepository;
+    private final UsersRepository userRepository;
     private final UserDtoConverter userDtoConverter;
 
-    public UserService(UserInformationRepository userRepository, UserDtoConverter userDtoConverter) {
+    public UserService(UsersRepository userRepository, UserDtoConverter userDtoConverter) {
         this.userRepository = userRepository;
         this.userDtoConverter = userDtoConverter;
     }
@@ -28,21 +27,21 @@ public class UserService {
     }
 
     public UserDto getUser(Long id) {
-        UserInformation userInformation = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
-        return userDtoConverter.convert(userInformation);
+        Users users = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
+        return userDtoConverter.convert(users);
     }
 
     public UserDto createUser(CreateUserRequest userRequest) {
-        UserInformation userInformation = new UserInformation(null, userRequest.getFirstName(), userRequest.getMail(), userRequest.getMiddleName(), userRequest.getPostCode(), true);
-        return userDtoConverter.convert(userRepository.save(userInformation));
+        Users users = new Users(null, userRequest.getFirstName(), userRequest.getMail(), userRequest.getMiddleName(), userRequest.getPostCode(), true);
+        return userDtoConverter.convert(userRepository.save(users));
     }
 
     public UserDto updateUser(Long id, UpdateUserRequest updateUserRequest) {
-        UserInformation userInformation = findById(id);
-        if (!userInformation.getActive()) {
+        Users users = findById(id);
+        if (!users.getActive()) {
             throw new UserIsNotActiveException("user  not active");
         }
-        UserInformation updatedUser = new UserInformation(userInformation.getId(), userInformation.getMail(), userInformation.getPostCode(), updateUserRequest.getFirstName(), updateUserRequest.getMiddleName(), true);
+        Users updatedUser = new Users(users.getId(), users.getMail(), users.getPostCode(), updateUserRequest.getFirstName(), updateUserRequest.getMiddleName(), true);
         return userDtoConverter.convert(userRepository.save(updatedUser));
     }
 
@@ -56,14 +55,14 @@ public class UserService {
     }
 
     public void changeActivateUser(Long id, Boolean isActive) {
-        UserInformation userInformation = findById(id);
+        Users users = findById(id);
 
-        if (!userInformation.getActive()) {
+        if (!users.getActive()) {
             throw new UserIsNotActiveException("user  not active");
         }
-        UserInformation updatedUser = new UserInformation(userInformation.getId(),
-                userInformation.getMail(), userInformation.getPostCode(), userInformation.getFirstName(),
-                userInformation.getMiddleName(), isActive);
+        Users updatedUser = new Users(users.getId(),
+                users.getMail(), users.getPostCode(), users.getFirstName(),
+                users.getMiddleName(), isActive);
         userRepository.save(updatedUser);
     }
 
@@ -78,8 +77,9 @@ public class UserService {
       return  userRepository.existsById(id);
     }
 
-    private UserInformation findById(Long id) {
+    public Users findById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("user not found"));
     }
+
 
 }
